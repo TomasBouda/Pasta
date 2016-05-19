@@ -1,0 +1,14 @@
+﻿<Application x:Class="PastaWpf.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PastaWpf"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="TextBlock" x:Key="Label">
+            <Style.Setters>
+                <Setter Property="FontWeight" Value="Bold"></Setter>
+                <Setter Property="Margin" Value="0,5,0,5"></Setter>
+            </Style.Setters>
+        </Style>
+    </Application.Resources>
+</Application>
