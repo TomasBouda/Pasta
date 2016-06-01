@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PastaWpf.Properties {
+namespace Pasta.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -68,6 +68,18 @@ namespace PastaWpf.Properties {
             }
             set {
                 this["Expiration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Paste_mode {
+            get {
+                return ((int)(this["Paste_mode"]));
+            }
+            set {
+                this["Paste_mode"] = value;
             }
         }
     }

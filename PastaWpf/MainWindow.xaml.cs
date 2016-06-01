@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PastaLib;
-using PastaWpf.Properties;
+using Pasta.Properties;
+using Pasta.WinApi;
 
-namespace PastaWpf
+namespace Pasta
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        private HotKey _hotkey;
         private System.Media.SoundPlayer _player;
+
+        private const string SOUND_CONFIRM = @"Sounds\confirm.wav";
+        private const string SOUND_ERROR = @"Sounds\error.wav";
 
         public Pastebin Pastebin { get; set; }
 
@@ -30,14 +31,37 @@ namespace PastaWpf
         {
             InitializeComponent();
 
-            Pastebin = new Pastebin(Settings.Default.API_key, Settings.Default.User_key, Settings.Default.Format, Settings.Default.Expiration);
+            Pastebin = new Pastebin(Settings.Default.API_key, Settings.Default.User_key, Settings.Default.Format, Settings.Default.Expiration, (PasteMode)Settings.Default.Paste_mode);
             DataContext = Pastebin;
-            _player = new System.Media.SoundPlayer();
+
+            // Register global hotkey Ctrl+ALt+C
+            Loaded += (s, e) =>
+            {
+                _hotkey = new HotKey(ModifierKeys.Control | ModifierKeys.Alt, Keys.C, this);
+                _hotkey.HotKeyPressed += (k) => Paste();
+            };
         }
 
+        private void Paste()
+        {
+            if (Pastebin.Paste(Clipboard.GetText(), string.Format("paste_{0}", DateTime.Now.ToString("ddMMyyyy_HHmmss"))))
+            {
+                Clipboard.SetText(Pastebin.LastResponse);
+
+                _player.SoundLocation = SOUND_CONFIRM;
+                _player.Play();
+            }
+            else
+            {
+                _player.SoundLocation = SOUND_ERROR;
+                _player.Play();
+            }
+        }
+
+        #region Event Handlers
         private void MainForm_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            _player = new System.Media.SoundPlayer();
         }
 
         private void MainForm_Closed(object sender, EventArgs e)
@@ -48,6 +72,7 @@ namespace PastaWpf
                 Settings.Default.User_key = Pastebin.UserKey;
                 Settings.Default.Format = Pastebin.Format;
                 Settings.Default.Expiration = Pastebin.Expiration;
+                Settings.Default.Paste_mode = (int)Pastebin.PasteMode;
                 Settings.Default.Save();
             }
         }
@@ -59,32 +84,28 @@ namespace PastaWpf
 
         private void btnAuthenticate_Click(object sender, RoutedEventArgs e)
         {
-            if (Pastebin.Login(Pastebin.UserName, Pastebin.Password))
+            if (Pastebin.Login(Pastebin.UserName, txtPassword.Password))
             {
-                _player.SoundLocation = @"Sounds\confirm.wav";
+                txtPassword.Password = "";
+                _player.SoundLocation = SOUND_CONFIRM;
                 _player.Play();
             }
             else
             {
-                _player.SoundLocation = @"Sounds\error.wav";
+                _player.SoundLocation = SOUND_ERROR;
                 _player.Play();
             }
         }
 
         private void btnPaste_Click(object sender, RoutedEventArgs e)
         {
-            if(Pastebin.Paste(Clipboard.GetText(), string.Format("paste_{0}", DateTime.Now.ToString("ddMMyyyy_HHmmss"))))
-            {
-                Clipboard.SetText(Pastebin.LastResponse);
-
-                _player.SoundLocation = @"Sounds\confirm.wav";
-                _player.Play();
-            }
-            else
-            {
-                _player.SoundLocation = @"Sounds\error.wav";
-                _player.Play();
-            }
+            Paste();
         }
+
+        private void linkAbout_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/TomasBouda/Pasta");
+        }
+        #endregion  
     }
 }

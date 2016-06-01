@@ -3,6 +3,7 @@ using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace PastaLib
     public class Pastebin : INotifyPropertyChanged
     {
         public const string API_ENDPOINT = "http://pastebin.com/api/api_post.php";
+        public const string PASTE_LOG_PATH = "pasta_history.txt";
 
         private string _apiKey;
         private bool _apiKeyLocked = true;
@@ -26,9 +28,9 @@ namespace PastaLib
         private string _expiration;
         private string _format;
         private string _lastResponse;
+        private PasteMode _pasteMode = PasteMode.Unlisted;
 
         private string _userName;
-        private string _password;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -104,22 +106,31 @@ namespace PastaLib
             }
         }
 
-        public string Password
+        public PasteMode PasteMode
         {
-            get { return _password; }
+            get { return _pasteMode; }
             set
             {
-                _password = value;
-                NotifyPropertyChanged(nameof(Password));
+                _pasteMode = value;
+                NotifyPropertyChanged(nameof(PasteMode));
             }
         }
 
-        public Pastebin(string apiKey, string userKey, string format, string expiration)
+        public IEnumerable<PasteMode> PasteModes
+        {
+            get
+            {
+                return Enum.GetValues(typeof(PasteMode)).Cast<PasteMode>();
+            }
+        }
+
+        public Pastebin(string apiKey, string userKey, string format, string expiration, PasteMode pasteMode)
         {
             ApiKey = apiKey;
             UserKey = userKey;
             Format = format;
             Expiration = expiration;
+            PasteMode = pasteMode;
         }
 
         public Pastebin(string apiKey, string userKey = null)
@@ -130,7 +141,7 @@ namespace PastaLib
 
         public Pastebin() { }
 
-        public bool Paste(string text, string pasteName, PasteMode pasteMode = PasteMode.Unlisted)
+        public bool Paste(string text, string pasteName)
         {
             RestClient client = new RestClient();
             client.BaseUrl = new Uri(API_ENDPOINT);
@@ -142,13 +153,19 @@ namespace PastaLib
             request.AddParameter("api_dev_key", ApiKey);
             request.AddParameter("api_user_key", UserKey);
             request.AddParameter("api_paste_code", text);
-            request.AddParameter("api_paste_private", (int)pasteMode);
+            request.AddParameter("api_paste_private", (int)PasteMode);
             request.AddParameter("api_paste_name", pasteName);
             request.AddParameter("api_paste_expire_date", Expiration);
             request.AddParameter("api_paste_format", Format);
 
             var response = client.Execute(request);
+            bool result = !response.Content.Contains("Bad");
+
             LastResponse = response.Content;
+
+            // Save paste url to file
+            if (result)
+                File.AppendAllText(PASTE_LOG_PATH, LastResponse + Environment.NewLine);
 
             return !response.Content.Contains("Bad");
         }

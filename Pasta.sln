@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta", "Pasta\Pasta.csproj", "{9FE6CD9C-E233-4BFC-B72A-76BDA224AED6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastaLib", "PastaLib\PastaLib.csproj", "{652F9C10-E2E1-4646-A13C-4A8216EAB6D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastaWpf", "PastaWpf\PastaWpf.csproj", "{E410745E-1937-45E5-B2BB-4B96CAE89425}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta", "PastaWpf\Pasta.csproj", "{E410745E-1937-45E5-B2BB-4B96CAE89425}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9FE6CD9C-E233-4BFC-B72A-76BDA224AED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FE6CD9C-E233-4BFC-B72A-76BDA224AED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FE6CD9C-E233-4BFC-B72A-76BDA224AED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FE6CD9C-E233-4BFC-B72A-76BDA224AED6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{652F9C10-E2E1-4646-A13C-4A8216EAB6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{652F9C10-E2E1-4646-A13C-4A8216EAB6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{652F9C10-E2E1-4646-A13C-4A8216EAB6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU

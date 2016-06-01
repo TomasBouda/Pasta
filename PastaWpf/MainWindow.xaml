@@ -1,24 +1,26 @@
-﻿<Window x:Class="PastaWpf.MainWindow"
+﻿<Window x:Class="Pasta.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PastaWpf"
-        xmlns:cvts="clr-namespace:PastaWpf.Converters"
+        xmlns:local="clr-namespace:Pasta"
+        xmlns:lib="clr-namespace:PastaLib;assembly=PastaLib"
+        xmlns:cvts="clr-namespace:Pasta.Converters"
         mc:Ignorable="d"
         Title="Pasta" 
-        Height="363" Width="296"
+        Height="363" Width="269.289"
         SizeToContent="Height"
-        ResizeMode="NoResize"
+        ResizeMode="CanMinimize"
         Name="MainForm" Icon="pasta.ico" Closed="MainForm_Closed" Loaded="MainForm_Loaded">
 
     <Window.Resources>
         <cvts:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <cvts:IsEmptyConverter x:Key="IsEmptyConverter" />
     </Window.Resources>
     
     <Grid>
         <StackPanel Margin="10,0,10,10">
-            <Expander FlowDirection="RightToLeft">
+            <Expander FlowDirection="RightToLeft" IsExpanded="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.ApiKey, Converter={StaticResource IsEmptyConverter}, Mode=OneWay}">
                 <Expander.Header>
                     <TextBlock Text="Options" />
                 </Expander.Header>
@@ -30,6 +32,11 @@
 
                         <TextBlock Style="{StaticResource Label}" Text="Expiration" />
                         <TextBox HorizontalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.Expiration}" />
+
+                        <TextBlock Style="{StaticResource Label}" Text="Paste Mode" />
+                        <ComboBox 
+                        ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.PasteModes}"
+                        SelectedValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.PasteMode}" />           
 
                         <TextBlock Style="{StaticResource Label}" Text="Api key"></TextBlock>
                         <Grid>
@@ -47,12 +54,12 @@
                             </Button>
                         </Grid>
 
-                        <Expander FlowDirection="RightToLeft" Name="expUserData">
+                        <Expander FlowDirection="RightToLeft" Name="expUserData" IsExpanded="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.UserKey, Converter={StaticResource IsEmptyConverter}, Mode=OneWay}">
                             <Expander.Header>
                                 <StackPanel FlowDirection="LeftToRight" HorizontalAlignment="Stretch" Width="{Binding ActualWidth, ElementName=expUserData}">
                                     <StackPanel Margin="27,0,0,0">
                                         <TextBlock Style="{StaticResource Label}" Text="User Key" />
-                                        <TextBox HorizontalAlignment="Stretch" IsEnabled="false" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.UserKey}" />
+                                        <TextBox HorizontalAlignment="Stretch" IsEnabled="true" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.UserKey}" />
                                     </StackPanel>
                                 </StackPanel>
                             </Expander.Header>
@@ -65,7 +72,7 @@
                                     <TextBox HorizontalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.UserName}" />
 
                                     <TextBlock Style="{StaticResource Label}" Text="Password" />
-                                    <TextBox HorizontalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.Password}" />
+                                    <PasswordBox Name="txtPassword" PasswordChar="*"/>
 
                                     <Button Margin="0,5,0,0" Name="btnAuthenticate" Click="btnAuthenticate_Click">Authenticate</Button>
                                 </StackPanel>
@@ -75,10 +82,12 @@
                 </Border>
             </Expander>
 
-            <Button Margin="0,5,0,5" Height="40" Name="btnPaste" Click="btnPaste_Click">Paste From Clipboard</Button>
+            <Button Margin="0,5,0,5" Height="40" Style="{StaticResource RoundedButton}" Name="btnPaste" Click="btnPaste_Click">Paste From Clipboard</Button>
 
-            <TextBlock Style="{StaticResource Label}" Text="Last response: " />
+            <TextBlock Margin="0,10,0,0" FontStyle="Italic" Text="Last paste url" />
             <TextBox HorizontalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Pastebin.LastResponse, Mode=OneWay}" />
+
+            <TextBlock Margin="0,10,0,0" HorizontalAlignment="Right"><Hyperlink Name="linkAbout" Click="linkAbout_Click">About</Hyperlink></TextBlock>
         </StackPanel>
         
         
