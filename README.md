@@ -1,12 +1,11 @@
 # Pasta [![Build status](https://ci.appveyor.com/api/projects/status/tr31lvssfbfomase?svg=true)](https://ci.appveyor.com/project/TomasBouda/pasta)
 
-<img src="https://raw.githubusercontent.com/TomasBouda/Pasta/master/pasta.PNG" align="right">
-**Pastebin.com helper utility**
+> Pastebin.com helper utility 
 
 Transforms your code into pastebin link.
 
-
 <br/>
+
 ## How to use it
 <img align="right" src="https://raw.githubusercontent.com/TomasBouda/Pasta/master/pasta_config.PNG" alt="options">
 On first start, you will need to set your API key.
